@@ -2,9 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a195ce13-560f-444d-a77c-b1d4885d2c26" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/日语mp3单词库/YD_jans.py" beforeDir="false" afterPath="$PROJECT_DIR$/日语mp3单词库/YD_jans.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/日语mp3单词库/mp.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/日语mp3单词库/mp.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/日语mp3单词库/mp.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/法语mp3单词库/YD_Frances.py" beforeDir="false" afterPath="$PROJECT_DIR$/法语mp3单词库/YD_Frances.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/法语mp3单词库/mp.xlsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/英语mp3单词库/YD_english.py" beforeDir="false" afterPath="$PROJECT_DIR$/英语mp3单词库/YD_english.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/英语mp3单词库/mp.xlsx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

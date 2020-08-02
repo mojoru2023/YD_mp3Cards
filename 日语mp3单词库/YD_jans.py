@@ -63,7 +63,7 @@ def text_save(filename, data):#filename为写入CSV文件的路径，data为要�
 if __name__ == '__main__':
     lpath = '/root/YD_mp3Cards/日语mp3单词库'
     # lpath =  os.getcwd()
-    excelFile = '{0}/mp.xlsx'.format(lpath)
+    excelFile = '{0}/mp_jans.xlsx'.format(lpath)
     full_items = read_xlrd(excelFile=excelFile)
     for single_name in full_items:
         print(single_name)

@@ -64,7 +64,7 @@ if __name__ == '__main__':
 
     lpath = '/root/YD_mp3Cards/法语mp3单词库'
     # lpath =  os.getcwd()
-    excelFile = '{0}/mp.xlsx'.format(lpath)
+    excelFile = '{0}/mp_frances.xlsx'.format(lpath)
     full_items = read_xlrd(excelFile=excelFile)
     for single_name in full_items:
         print(single_name)
@@ -96,5 +96,9 @@ if __name__ == '__main__':
 
             pass
 
+
+
+
+#
 
 
