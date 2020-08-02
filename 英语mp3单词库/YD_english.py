@@ -66,7 +66,7 @@ if __name__ == '__main__':
     full_items = read_xlrd(excelFile=excelFile)
     for single_name in full_items:
         print(single_name)
-        url = 'https://www.youdao.com/w/jap/{0}/#keyfrom=dict2.top'.format(single_name[0])
+        url = 'https://www.youdao.com/w/{0}/#keyfrom=dict2.top'.format(single_name[0])
         html = call_page(url)
         selector = etree.HTML(html)
         mp3_c = selector.xpath('//*[@id="phrsListTab"]/h2/div/span[2]/a/@data-rel')
