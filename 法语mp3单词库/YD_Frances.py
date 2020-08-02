@@ -61,26 +61,29 @@ def text_save(filename, data):#filename为写入CSV文件的路径，data为要�
     print("保存文件成功")
 
 if __name__ == '__main__':
-    lpath = '/root/YD_mp3Cards/日语mp3单词库'
+
+    lpath = '/root/YD_mp3Cards/法语mp3单词库'
     # lpath =  os.getcwd()
     excelFile = '{0}/mp.xlsx'.format(lpath)
     full_items = read_xlrd(excelFile=excelFile)
     for single_name in full_items:
         print(single_name)
-        url = 'https://www.youdao.com/w/jap/{0}/#keyfrom=dict2.top'.format(single_name[0])
+        url = 'http://dict.youdao.com/w/fr/{0}/#keyfrom=dict2.top'.format(single_name[0])
+        print(url)
         html = call_page(url)
 
-        patt = re.compile('<a href="#" title="发音" class="sp dictvoice voice-js log-js" data-rel="(.*?)" data-4log="dict.basic.jc.voice"></a>',re.S)
+        patt = re.compile('<a href="#" title="发音" class="sp dictvoice voice-js log-js" data-rel="(.*?)" data-4log="dict.basic.fc.voice"></a>',re.S)
         mp3_c = re.findall(patt, html)
         try:
             big_list = []
             if len(mp3_c) != 0:
                 for item in mp3_c:
-                    f_url = "".join(item.split("amp;"))
-                    big_list.append('https://dict.youdao.com/dictvoice?audio={0}'.format(f_url))
+                    # f_url = "".join(item.split("amp;")) 法语不用？
+                    big_list.append('http://dict.youdao.com/dictvoice?audio={0}'.format(item))
 
             for mp3_url in big_list:
                 res = requests.get(mp3_url)
+                print(mp3_url)
 
                 music = res.content
 
