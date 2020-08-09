@@ -87,7 +87,7 @@ if __name__ == '__main__':
                 with open(r'{0}/{1}.mp3'.format(lpath,single_name[1]), 'ab') as file:  # 保存到本地的文件名
                     file.write(res.content)
                     file.flush()
-                    time.sleep(0.3)
+                    time.sleep(3)
         except:
 
             pass
