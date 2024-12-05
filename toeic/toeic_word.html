@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEIC  单词循环发音工具</title>
+    <link rel="icon" class="js-site-favicon" type="image/svg+xml" href="https://cdn.iconscout.com/icon/premium/png-256-thumb/gears-2280063-1902308.png?f=webp">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <style>
+
+        .logo {
+    display: block;
+    margin: 0 auto 20px;
+    width: 120px;
+}
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 210mm; /* A4宽度 */
+            height: 297mm; /* A4高度 */
+            padding: 20px;
+            overflow-y: auto; /* 允许滚动 */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 40px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            color: white;
+            background-color: #007bff;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .word-list {
+            margin-top: 20px;
+        }
+
+        .word-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .word-item:last-child {
+            border-bottom: none;
+        }
+
+        audio {
+            display: none; /* 隐藏音频播放器 */
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <img src="https://static.vecteezy.com/system/resources/previews/022/666/101/non_2x/planet-earth-cartoon-colored-clipart-illustration-free-vector.jpg" alt="Logo" class="logo">
+        <h1>TOEIC  单词循环发音工具</h1>
+
+        <div class="word-list">
+            <input type="text" v-model="word" placeholder="输入要学习的单词">
+            <button @click="addWord">添加单词</button>
+        </div>
+
+        <div v-for="(item, index) in words" :key="index" class="word-item">
+            <span>{{ item.word }}</span>
+            <div>
+                <button @click="toggleAudio(index)">
+                    {{ item.isPlaying ? '暂停' : '播放' }}
+                </button>
+                <button @click="removeWord(item.word)">删除</button>
+            </div>
+        </div>
+
+        <audio ref="audio" :src="currentAudioSrc" loop @ended="onEnded"></audio>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    word: '',
+                    words: [],
+                    currentAudioSrc: ''
+                };
+            },
+            created() {
+                this.initIndexedDB();
+            },
+            methods: {
+                initIndexedDB() {
+                    const request = indexedDB.open('WordLearningDB', 1);
+
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        db.createObjectStore('words', { keyPath: 'word' });
+                    };
+
+                    request.onsuccess = (event) => {
+                        const db = event.target.result;
+                        this.loadWords(db);
+                    };
+                },
+                loadWords(db) {
+                    const transaction = db.transaction(['words'], 'readonly');
+                    const store = transaction.objectStore('words');
+
+                    store.getAll().onsuccess = (event) => {
+                        this.words = event.target.result.map(item => ({
+                            word: item.word,
+                            isPlaying: false
+                        }));
+                    };
+                },
+                addWord() {
+                    const trimmedWord = this.word.trim();
+
+                    if (!trimmedWord) {
+                        alert('请输入一个单词！');
+                        return;
+                    }
+
+                    const existingWord = this.words.find(item => item.word === trimmedWord);   if (existingWord) {
+                        if (!confirm(`单词 "${trimmedWord}" 已经存在。是否重新学习？`)) {
+                            return; // 用户选择不重新学习
+                        }
+                    } else {
+                        this.words.push({ word: trimmedWord, isPlaying: false });
+                        this.saveWordToDB(trimmedWord); // 保存到 IndexedDB
+                    }
+
+                    // 设置音频文件路径
+                    this.currentAudioSrc = `${trimmedWord}.mp3`;
+                    this.word = ''; // 清空输入框
+                },
+                saveWordToDB(word) {
+                    const request = indexedDB.open('WordLearningDB', 1);
+
+                    request.onsuccess = (event) => {
+                        const db = event.target.result;
+                        const transaction = db.transaction(['words'], 'readwrite');
+                        const store = transaction.objectStore('words');
+
+                        store.add({ word: word });
+                    };
+                },
+                toggleAudio(index) {
+                    const item = this.words[index];
+                    item.isPlaying = !item.isPlaying;
+
+                    if (item.isPlaying) {
+                        this.$refs.audio.src = `${item.word}.mp3`;
+                        this.$refs.audio.play();
+                    } else {
+                        this.$refs.audio.pause();
+                    }
+                },
+                removeWord(word) {
+                    // 从 IndexedDB 中删除单词
+                    const request = indexedDB.open('WordLearningDB', 1);
+
+                    request.onsuccess = (event) => {
+                        const db = event.target.result;
+                        const transaction = db.transaction(['words'], 'readwrite');
+                        const store = transaction.objectStore('words');
+
+                        store.delete(word);
+
+                        // 从本地数组中删除该单词
+                        this.words = this.words.filter(item => item.word !== word);
+                    };
+                },
+                onEnded() {
+                    // 当音频结束时，重新播放（实现无限循环）
+                    this.$refs.audio.currentTime = 0;
+                    this.$refs.audio.play();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
